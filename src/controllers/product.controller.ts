@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Product from "../models/product.model";
+import { deleteFile } from "../utils/fileHandler";
 
 export const createProduct = async (
   req: Request,
@@ -91,6 +92,8 @@ export const deleteProduct = async (
       res.status(404).json({ message: "Product not found" });
       return;
     }
+
+    deleteFile(product.imageUrl);
 
     res.status(200).json({ message: "Product deleted succesfully" });
   } catch (error) {

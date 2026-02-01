@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Category from "../models/category.model";
+import { deleteFile } from "../utils/fileHandler";
 
 export const createCategory = async (
   req: Request,
@@ -89,6 +90,8 @@ export const deleteCategory = async (
       res.status(404).json({ message: "Category not found" });
       return;
     }
+
+    deleteFile(category.imageUrl);
 
     res.status(200).json({ message: "Category deleted succesfully" });
   } catch (error) {
