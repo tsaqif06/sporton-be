@@ -9,7 +9,19 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    let subFolder = "";
+    if (req.baseUrl.includes("products")) subFolder = "products";
+    else if (req.baseUrl.includes("categories")) subFolder = "categories";
+    else if (req.baseUrl.includes("transactions")) subFolder = "transactions";
+    else subFolder = "others";
+
+    const finalDir = path.join("uploads", subFolder);
+
+    if (!fs.existsSync(finalDir)) {
+      fs.mkdirSync(finalDir, { recursive: true });
+    }
+
+    cb(null, finalDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

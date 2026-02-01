@@ -59,6 +59,10 @@ export const updateCategory = async (
     const categoryData = req.body;
 
     if (req.file) {
+      const oldCategory = await Category.findById(req.params.id);
+      if (oldCategory?.imageUrl) {
+        deleteFile(oldCategory.imageUrl);
+      }
       categoryData.imageUrl = req.file.path;
     }
 
@@ -69,6 +73,7 @@ export const updateCategory = async (
     );
 
     if (!category) {
+      if (req.file) deleteFile(req.file.path);
       res.status(404).json({ message: "Category not found" });
       return;
     }

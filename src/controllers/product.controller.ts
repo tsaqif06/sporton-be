@@ -61,6 +61,10 @@ export const updateProduct = async (
     const productData = req.body;
 
     if (req.file) {
+      const oldProduct = await Product.findById(req.params.id);
+      if (oldProduct?.imageUrl) {
+        deleteFile(oldProduct.imageUrl);
+      }
       productData.imageUrl = req.file.path;
     }
 
@@ -71,6 +75,7 @@ export const updateProduct = async (
     );
 
     if (!product) {
+      if (req.file) deleteFile(req.file.path);
       res.status(404).json({ message: "Product not found" });
       return;
     }
