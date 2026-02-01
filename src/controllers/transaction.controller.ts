@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Transaction from "../models/transaction.model";
 import { deleteFile } from "../utils/fileHandler";
+import Product from "../models/product.model";
 
 export const createTransaction = async (
   req: Request,
@@ -70,6 +71,7 @@ export const updateTransaction = async (
 ): Promise<void> => {
   try {
     const transactionData = req.body;
+    const { id } = req.params;
 
     if (
       transactionData.purchasedItems &&
@@ -80,25 +82,38 @@ export const updateTransaction = async (
       );
     }
 
+    const oldTransaction = await Transaction.findById(id);
+    if (!oldTransaction) {
+      if (req.file) deleteFile(req.file.path);
+      res.status(404).json({ message: "Transaction not found" });
+      return;
+    }
+
     if (req.file) {
-      const oldTransaction = await Transaction.findById(req.params.id);
-      if (oldTransaction?.paymentProof) {
+      if (oldTransaction.paymentProof) {
         deleteFile(oldTransaction.paymentProof);
       }
       transactionData.paymentProof = req.file.path;
     }
 
+    if (
+      oldTransaction.status === "pending" &&
+      transactionData.status === "paid"
+    ) {
+      const updateStockPromises = oldTransaction.purchasedItems.map((item) => {
+        return Product.findByIdAndUpdate(item.productId, {
+          $inc: { stock: -item.qty },
+        });
+      });
+
+      await Promise.all(updateStockPromises);
+    }
+
     const transaction = await Transaction.findByIdAndUpdate(
-      req.params.id,
+      id,
       transactionData,
       { new: true },
     );
-
-    if (!transaction) {
-      if (req.file) deleteFile(req.file.path);
-      res.status(404).json({ message: "Transaction not found" });
-      return;
-    }
 
     res.status(200).json(transaction);
   } catch (error) {
