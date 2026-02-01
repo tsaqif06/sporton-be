@@ -16,8 +16,10 @@ export const createCategory = async (
     const category = new Category(categoryData);
     await category.save();
     res.status(201).json(category);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating Category", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error creating Category", error: error.message });
   }
 };
 
@@ -28,8 +30,10 @@ export const getCategories = async (
   try {
     const categories = await Category.find().sort({ createdAt: -1 }); // sort dari yg terbaru
     res.status(200).json(categories);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching categories", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching categories", error: error.message });
   }
 };
 
@@ -46,8 +50,10 @@ export const getCategoryById = async (
     }
 
     res.status(200).json(category);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching category", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching category", error: error.message });
   }
 };
 
@@ -79,8 +85,10 @@ export const updateCategory = async (
     }
 
     res.status(200).json(category);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating category", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error updating category", error: error.message });
   }
 };
 
@@ -99,7 +107,9 @@ export const deleteCategory = async (
     deleteFile(category.imageUrl);
 
     res.status(200).json({ message: "Category deleted succesfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting category", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error deleting category", error: error.message });
   }
 };

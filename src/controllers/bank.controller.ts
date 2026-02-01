@@ -10,20 +10,21 @@ export const createBank = async (
     const bank = new Bank(bankData);
     await bank.save();
     res.status(201).json(bank);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating Bank", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error creating Bank", error: error.message });
   }
 };
 
-export const getBanks = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getBanks = async (req: Request, res: Response): Promise<void> => {
   try {
     const banks = await Bank.find().sort({ createdAt: -1 }); // sort dari yg terbaru
     res.status(200).json(banks);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching banks", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching banks", error: error.message });
   }
 };
 
@@ -40,8 +41,10 @@ export const getBankById = async (
     }
 
     res.status(200).json(bank);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching bank", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching bank", error: error.message });
   }
 };
 
@@ -52,11 +55,9 @@ export const updateBank = async (
   try {
     const bankData = req.body;
 
-    const bank = await Bank.findByIdAndUpdate(
-      req.params.id,
-      bankData,
-      { new: true },
-    );
+    const bank = await Bank.findByIdAndUpdate(req.params.id, bankData, {
+      new: true,
+    });
 
     if (!bank) {
       res.status(404).json({ message: "Bank not found" });
@@ -64,8 +65,10 @@ export const updateBank = async (
     }
 
     res.status(200).json(bank);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating bank", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error updating bank", error: error.message });
   }
 };
 
@@ -82,7 +85,9 @@ export const deleteBank = async (
     }
 
     res.status(200).json({ message: "Bank deleted succesfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting bank", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error deleting bank", error: error.message });
   }
 };

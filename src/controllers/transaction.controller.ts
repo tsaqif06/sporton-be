@@ -26,8 +26,10 @@ export const createTransaction = async (
     const transaction = new Transaction(transactionData);
     await transaction.save();
     res.status(201).json(transaction);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating Transaction", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error creating Transaction", error: error.message });
   }
 };
 
@@ -40,8 +42,10 @@ export const getTransactions = async (
       .populate("purchasedItems.productId")
       .sort({ createdAt: -1 }); // sort dari yg terbaru
     res.status(200).json(transactions);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching transactions", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching transactions", error: error.message });
   }
 };
 
@@ -60,8 +64,10 @@ export const getTransactionById = async (
     }
 
     res.status(200).json(transaction);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching transaction", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching transaction", error: error.message });
   }
 };
 
@@ -116,8 +122,10 @@ export const updateTransaction = async (
     );
 
     res.status(200).json(transaction);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating transaction", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error updating transaction", error: error.message });
   }
 };
 
@@ -136,7 +144,9 @@ export const deleteTransaction = async (
     deleteFile(transaction.paymentProof);
 
     res.status(200).json({ message: "Transaction deleted succesfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting transaction", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error deleting transaction", error: error.message });
   }
 };

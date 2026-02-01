@@ -16,8 +16,10 @@ export const createProduct = async (
     const product = new Product(productData);
     await product.save();
     res.status(201).json(product);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating Product", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error creating Product", error: error.message });
   }
 };
 
@@ -30,8 +32,10 @@ export const getProducts = async (
       .populate("category")
       .sort({ createdAt: -1 }); // sort dari yg terbaru
     res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching products", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching products", error: error.message });
   }
 };
 
@@ -48,8 +52,10 @@ export const getProductById = async (
     }
 
     res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching product", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching product", error: error.message });
   }
 };
 
@@ -81,8 +87,10 @@ export const updateProduct = async (
     }
 
     res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating product", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error updating product", error: error.message });
   }
 };
 
@@ -101,7 +109,9 @@ export const deleteProduct = async (
     deleteFile(product.imageUrl);
 
     res.status(200).json({ message: "Product deleted succesfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting product", error });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error deleting product", error: error.message });
   }
 };

@@ -26,7 +26,7 @@ export const authenticate = (
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(401).json({ message: "Invalid Token" });
   }

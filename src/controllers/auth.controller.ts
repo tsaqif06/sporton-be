@@ -36,7 +36,7 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
         email: user.email,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Signin Error: ", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -73,7 +73,7 @@ export const initiateAdmin = async (
     res.status(201).json({
       message: "Admin user created successfully",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Initiate new admin user error: ", error);
     res.status(500).json({ messaage: "Internal Server Error" });
   }
