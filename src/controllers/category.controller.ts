@@ -67,7 +67,7 @@ export const updateCategory = async (
     if (req.file) {
       const oldCategory = await Category.findById(req.params.id);
       if (oldCategory?.imageUrl) {
-        deleteFile(oldCategory.imageUrl);
+        await deleteFile(oldCategory.imageUrl);
       }
       categoryData.imageUrl = req.file.path;
     }
@@ -79,13 +79,14 @@ export const updateCategory = async (
     );
 
     if (!category) {
-      if (req.file) deleteFile(req.file.path);
+      if (req.file) await deleteFile(req.file.path);
       res.status(404).json({ message: "Category not found" });
       return;
     }
 
     res.status(200).json(category);
   } catch (error: any) {
+    if (req.file) await deleteFile(req.file.path);
     res
       .status(500)
       .json({ message: "Error updating category", error: error.message });
@@ -104,7 +105,9 @@ export const deleteCategory = async (
       return;
     }
 
-    deleteFile(category.imageUrl);
+    if (category.imageUrl) {
+      await deleteFile(category.imageUrl);
+    }
 
     res.status(200).json({ message: "Category deleted succesfully" });
   } catch (error: any) {

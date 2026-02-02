@@ -90,14 +90,14 @@ export const updateTransaction = async (
 
     const oldTransaction = await Transaction.findById(id);
     if (!oldTransaction) {
-      if (req.file) deleteFile(req.file.path);
+      if (req.file) await deleteFile(req.file.path);
       res.status(404).json({ message: "Transaction not found" });
       return;
     }
 
     if (req.file) {
       if (oldTransaction.paymentProof) {
-        deleteFile(oldTransaction.paymentProof);
+        await deleteFile(oldTransaction.paymentProof);
       }
       transactionData.paymentProof = req.file.path;
     }
@@ -123,6 +123,7 @@ export const updateTransaction = async (
 
     res.status(200).json(transaction);
   } catch (error: any) {
+    if (req.file) await deleteFile(req.file.path);
     res
       .status(500)
       .json({ message: "Error updating transaction", error: error.message });
@@ -141,7 +142,9 @@ export const deleteTransaction = async (
       return;
     }
 
-    deleteFile(transaction.paymentProof);
+    if (transaction.paymentProof) {
+      await deleteFile(transaction.paymentProof);
+    }
 
     res.status(200).json({ message: "Transaction deleted succesfully" });
   } catch (error: any) {

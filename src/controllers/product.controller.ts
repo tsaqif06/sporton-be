@@ -69,7 +69,7 @@ export const updateProduct = async (
     if (req.file) {
       const oldProduct = await Product.findById(req.params.id);
       if (oldProduct?.imageUrl) {
-        deleteFile(oldProduct.imageUrl);
+        await deleteFile(oldProduct.imageUrl);
       }
       productData.imageUrl = req.file.path;
     }
@@ -81,13 +81,14 @@ export const updateProduct = async (
     );
 
     if (!product) {
-      if (req.file) deleteFile(req.file.path);
+      if (req.file) await deleteFile(req.file.path);
       res.status(404).json({ message: "Product not found" });
       return;
     }
 
     res.status(200).json(product);
   } catch (error: any) {
+    if (req.file) await deleteFile(req.file.path);
     res
       .status(500)
       .json({ message: "Error updating product", error: error.message });
@@ -106,7 +107,9 @@ export const deleteProduct = async (
       return;
     }
 
-    deleteFile(product.imageUrl);
+    if (product.imageUrl) {
+      await deleteFile(product.imageUrl);
+    }
 
     res.status(200).json({ message: "Product deleted succesfully" });
   } catch (error: any) {
